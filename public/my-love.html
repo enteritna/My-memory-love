@@ -5,30 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Love - Kho ảnh kỷ niệm</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Thư viện Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .romantic-font {
-            font-family: 'Dancing Script', cursive;
-        }
-        ::-webkit-scrollbar {
-            height: 8px;
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(252, 231, 243, 0.8);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(236, 72, 153, 0.5);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(236, 72, 153, 0.8);
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .romantic-font { font-family: 'Dancing Script', cursive; }
+        ::-webkit-scrollbar { height: 8px; width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(252, 231, 243, 0.8); }
+        ::-webkit-scrollbar-thumb { background: rgba(236, 72, 153, 0.5); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(236, 72, 153, 0.8); }
 
-        /* Hiệu ứng trang trí bay nổi: tim, cánh hoa, lấp lánh */
         #floating-decor { position: fixed; inset: 0; pointer-events: none; z-index: 5; overflow: hidden; }
         .float-item { position: absolute; bottom: -40px; opacity: 0; will-change: transform, opacity;
             animation: floatUp linear forwards; filter: drop-shadow(0 0 6px rgba(244,114,182,0.55)); user-select: none; }
@@ -50,7 +37,6 @@
 </head>
 <body class="bg-pink-50 text-rose-900 min-h-screen overflow-x-hidden relative">
 
-    <!-- NỀN ĐỒ HỌA: Ánh đèn bokeh & Thành phố -->
     <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-b from-pink-100/80 via-rose-50/90 to-pink-50"></div>
         <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-pink-300/30 blur-[120px] animate-pulse"></div>
@@ -59,7 +45,7 @@
 
     <div id="floating-decor" aria-hidden="true"></div>
 
-    <!-- ================= GIAO DIỆN 1 & 2: TRANG CHỦ & ĐĂNG NHẬP ================= -->
+    <!-- MÀN HÌNH ĐĂNG NHẬP -->
     <div id="login-screen" class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 transition-all duration-700">
         <div class="text-center mb-6">
             <h1 class="romantic-font text-6xl md:text-7xl text-pink-500 drop-shadow-[0_0_25px_rgba(244,114,182,0.4)]">My Love</h1>
@@ -80,7 +66,6 @@
                 </button>
             </div>
 
-            <!-- Giao diện 2: Nút OPEN -->
             <div id="success-container" class="w-full flex flex-col items-center gap-3 hidden transition-all duration-500">
                 <p class="text-emerald-600 text-sm font-medium animate-pulse">Đúng rồi! Bấm OPEN để vào ♡</p>
                 <button onclick="enterApp()" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg shadow-pink-500/30 transition-all transform hover:scale-[1.02] active:scale-[0.98]">
@@ -88,15 +73,12 @@
                 </button>
             </div>
 
-            <p class="text-[11px] text-rose-400 text-center mt-2">Gợi ý: mật khẩu là ngày tháng năm quan trọng nhất của chúng mình, chỉ có nguyên số thôi</p>
+            <p class="text-[11px] text-rose-400 text-center mt-2">Gợi ý: mật khẩu là ngày tháng năm quan trọng nhất của chúng ta, chỉ gồm nguyên số thôi</p>
         </div>
     </div>
 
-
-    <!-- ================= GIAO DIỆN 3 & 4: ALBUM & TRÌNH XEM CHI TIẾT ================= -->
+    <!-- GIAO DIỆN CHÍNH -->
     <div id="main-app" class="relative z-10 hidden min-h-screen flex flex-col">
-        
-        <!-- Header Top Bar chuẩn theo yêu cầu -->
         <header class="w-full bg-white/90 backdrop-blur-md border-b border-pink-200 px-4 md:px-8 py-3 flex items-center justify-between sticky top-0 z-30">
             <div class="flex items-center gap-4">
                 <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -107,41 +89,35 @@
                 </div>
                 <div class="hidden sm:flex items-center gap-1.5 bg-emerald-50 border border-emerald-500/30 text-emerald-600 text-xs px-3 py-1 rounded-full">
                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-                    Đã kết nối Google Drive
+                    Đã kết nối Supabase Cloud
                 </div>
             </div>
 
             <div class="flex items-center gap-2 md:gap-3">
-                <!-- Nút Bật/Tắt nhạc -->
                 <button id="audio-toggle-btn" onclick="toggleAudio()" class="bg-white/90 hover:bg-pink-200 text-rose-900 text-xs md:text-sm font-medium px-4 py-2 rounded-full border border-pink-200 flex items-center gap-2 transition-all">
                     <svg class="w-4 h-4 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
                     <span id="sound-text">Bật nhạc</span>
                 </button>
 
-                <!-- Nút Sao lưu -->
-                <button onclick="syncDrive()" class="bg-white/90 hover:bg-pink-200 text-rose-900 text-xs md:text-sm font-medium px-4 py-2 rounded-full border border-pink-200 flex items-center gap-2 transition-all">
+                <button onclick="syncCloud()" class="bg-white/90 hover:bg-pink-200 text-rose-900 text-xs md:text-sm font-medium px-4 py-2 rounded-full border border-pink-200 flex items-center gap-2 transition-all">
                     <svg class="w-4 h-4 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
-                    Sao lưu
+                    Đồng bộ
                 </button>
 
-                <!-- Nút Tải ảnh lên -->
-                <label class="bg-pink-500 hover:bg-pink-400 text-white text-xs md:text-sm font-medium px-4 py-2 rounded-full flex items-center gap-2 cursor-pointer shadow-lg shadow-pink-500/30 transition-all">
+                <button onclick="triggerUpload()" class="bg-pink-500 hover:bg-pink-400 text-white text-xs md:text-sm font-medium px-4 py-2 rounded-full flex items-center gap-2 cursor-pointer shadow-lg shadow-pink-500/30 transition-all">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     Tải ảnh lên
-                    <input type="file" id="upload-input" accept="image/*" multiple class="hidden" onchange="handleImageUpload(event)">
-                </label>
+                </button>
+                <input type="file" id="upload-input" accept="image/*" multiple class="hidden">
 
-                <!-- Nút Khóa web (quay về giao diện 1) -->
-                <button onclick="lockApp()" title="Khóa web (Quay về màn hình nhập mật khẩu)" class="w-9 h-9 rounded-full bg-white/90 hover:bg-pink-200 border border-pink-200 flex items-center justify-center text-rose-700 hover:text-rose-900 transition-all">
+                <button onclick="lockApp()" title="Khóa web" class="w-9 h-9 rounded-full bg-white/90 hover:bg-pink-200 border border-pink-200 flex items-center justify-center text-rose-700 hover:text-rose-900 transition-all">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                 </button>
             </div>
         </header>
 
-        <!-- Giao diện 3: Album (Cuộn phim ngang hoặc Lưới dọc) -->
         <main class="flex-1 p-4 md:p-8 flex flex-col justify-center">
             <div class="max-w-7xl mx-auto w-full bg-white/50 backdrop-blur-xl border border-pink-200 rounded-3xl p-6 shadow-2xl relative">
-                
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4 border-b border-pink-200 pb-4">
                     <div class="flex items-center gap-3">
                         <div class="bg-pink-100 px-4 py-1.5 rounded-full text-xs font-semibold text-pink-500 border border-pink-200" id="current-album-tab">Hôm nay</div>
@@ -163,21 +139,16 @@
         </main>
     </div>
 
-
-    <!-- ================= GIAO DIỆN 4: TRÌNH XEM CHI TIẾT & TIỆN ÍCH KỶ NIỆM ================= -->
+    <!-- MODAL XEM CHI TIẾT -->
     <div id="detail-modal" class="fixed inset-0 z-50 bg-pink-200/60 backdrop-blur-md hidden flex items-center justify-center p-2 md:p-6 transition-all">
         <div class="bg-rose-50 border border-pink-200 w-full max-w-6xl h-[92vh] rounded-3xl shadow-2xl flex flex-col lg:flex-row overflow-hidden relative">
-            
             <button onclick="closeDetailModal()" class="absolute top-4 right-4 z-20 bg-white/80 hover:bg-pink-200 text-rose-900 text-xs px-3 py-1.5 rounded-full border border-pink-200 flex items-center gap-1.5 transition-all">
                 ✕ Đóng
             </button>
 
-            <!-- Cột trái: Khung xem ảnh lớn & điều hướng -->
             <div class="flex-1 bg-pink-100/70 relative flex items-center justify-center p-4 h-[50vh] lg:h-full">
                 <button onclick="prevDetailImage()" class="absolute left-4 z-10 w-10 h-10 rounded-full bg-white/80 hover:bg-pink-100 text-rose-900 flex items-center justify-center border border-pink-200">‹</button>
-                
                 <img id="modal-active-img" src="" alt="Memory detail" class="max-h-full max-w-full object-contain rounded-lg shadow-2xl">
-                
                 <button onclick="nextDetailImage()" class="absolute right-4 z-10 w-10 h-10 rounded-full bg-white/80 hover:bg-pink-100 text-rose-900 flex items-center justify-center border border-pink-200">›</button>
 
                 <div class="absolute bottom-4 left-4 bg-white/80 backdrop-blur-md px-4 py-2 rounded-xl border border-pink-200 text-xs flex items-center gap-3">
@@ -189,97 +160,44 @@
                 </div>
             </div>
 
-            <!-- Cột phải: Panel Tiện ích -->
             <div class="w-full lg:w-[400px] bg-white/90 border-t lg:border-t-0 lg:border-l border-pink-200 p-5 flex flex-col gap-5 overflow-y-auto">
-                
-                <!-- 1. Trình phát video kỷ niệm & nhạc lofi phụ -->
                 <div class="bg-white/80 border border-pink-200 rounded-2xl p-3 flex flex-col gap-3">
                     <div class="relative rounded-xl overflow-hidden aspect-video bg-pink-50 flex items-center justify-center group">
                         <video id="memory-video" src="/__l5e/assets-v1/ddbdeca1-7af0-4fcc-819e-5cfdaff8eb74/memory_video.mp4" preload="metadata" class="w-full h-full object-cover" playsinline muted loop></video>
-                        
                         <button id="video-play-btn" onclick="toggleVideoPlayback()" class="absolute inset-0 m-auto w-12 h-12 rounded-full bg-pink-500 hover:bg-pink-400 text-white flex items-center justify-center shadow-lg shadow-pink-500/50 transform hover:scale-110 transition-all z-10">
-                            <svg id="play-btn-icon" class="w-6 h-6 ml-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+                            <svg class="w-6 h-6 ml-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
                         </button>
                     </div>
-
-                    <div class="text-center">
-                        <p class="text-pink-500 text-xs font-semibold">🌷 Khoảnh khắc đáng nhớ nhất đối với anh 🌷</p>
-                        <p class="text-rose-500 text-[11px] mt-0.5">♫ Ngày em đồng ý quen anh ♫  </p>
-                    </div>
                 </div>
 
-                <!-- 2. Bộ đếm thời gian bên nhau -->
                 <div class="bg-white/80 border border-pink-500/30 rounded-2xl p-4 flex flex-col items-center">
-                    <p class="text-pink-500 font-semibold text-xs mb-3 flex items-center gap-1.5">
-                        <span>❤️</span> THỜI GIAN BÊN NHAU <span>❤️</span>
-                    </p>
+                    <p class="text-pink-500 font-semibold text-xs mb-3">❤️ THỜI GIAN BÊN NHAU ❤️</p>
                     <div class="grid grid-cols-4 gap-2 w-full text-center">
-                        <div class="bg-white/90 py-2.5 rounded-xl border border-pink-200">
-                            <span id="counter-days" class="text-xl font-bold text-pink-500">112</span>
-                            <p class="text-[10px] text-rose-500 mt-0.5">ngày</p>
-                        </div>
-                        <div class="bg-white/90 py-2.5 rounded-xl border border-pink-200">
-                            <span id="counter-hours" class="text-xl font-bold text-pink-500">13</span>
-                            <p class="text-[10px] text-rose-500 mt-0.5">giờ</p>
-                        </div>
-                        <div class="bg-white/90 py-2.5 rounded-xl border border-pink-200">
-                            <span id="counter-mins" class="text-xl font-bold text-pink-500">9</span>
-                            <p class="text-[10px] text-rose-500 mt-0.5">phút</p>
-                        </div>
-                        <div class="bg-white/90 py-2.5 rounded-xl border border-pink-200">
-                            <span id="counter-secs" class="text-xl font-bold text-pink-500">21</span>
-                            <p class="text-[10px] text-rose-500 mt-0.5">giây</p>
-                        </div>
-                    </div>
-                    <p class="text-[10px] text-rose-400 mt-2">Tính từ 00:00 ngày 27/07/2026 (giờ địa phương)</p>
-                </div>
-
-                <!-- 3. Lịch vạn niên (Đã cập nhật dòng chữ kỷ niệm 26/06 ❤️ 09/11) -->
-                <div class="bg-white/80 border border-pink-200 rounded-2xl p-4">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center gap-2 text-xs font-semibold text-rose-900">
-                            <span class="text-blue-400">📅</span> Tháng 11 2026
-                        </div>
-                        <span class="text-[11px] text-pink-500 font-medium">26/06 ❤️ 09/11</span>
-                    </div>
-
-                    <div class="grid grid-cols-7 gap-1 text-center text-xs">
-                        <span class="text-rose-400 py-1">CN</span>
-                        <span class="text-rose-400 py-1">T2</span>
-                        <span class="text-rose-400 py-1">T3</span>
-                        <span class="text-rose-400 py-1">T4</span>
-                        <span class="text-rose-400 py-1">T5</span>
-                        <span class="text-rose-400 py-1">T6</span>
-                        <span class="text-rose-400 py-1">T7</span>
-                        
-                        <span class="py-1.5 text-rose-700">1</span><span class="py-1.5 text-rose-700">2</span><span class="py-1.5 text-rose-700">3</span><span class="py-1.5 text-rose-700">4</span><span class="py-1.5 text-rose-700">5</span><span class="py-1.5 text-rose-700">6</span><span class="py-1.5 text-rose-700">7</span>
-                        <span class="py-1.5 text-rose-700">8</span><span class="py-1.5 text-rose-700">9</span><span class="py-1.5 text-rose-700">10</span><span class="py-1.5 text-rose-700">11</span><span class="py-1.5 text-rose-700">12</span><span class="py-1.5 text-rose-700">13</span><span class="py-1.5 text-rose-700">14</span>
-                        <span class="py-1.5 text-rose-700">15</span><span class="py-1.5 text-white bg-pink-500 rounded-lg font-bold">16</span><span class="py-1.5 text-rose-700">17</span><span class="py-1.5 text-rose-700">18</span><span class="py-1.5 text-rose-700">19</span><span class="py-1.5 text-rose-700">20</span><span class="py-1.5 text-rose-700">21</span>
-                        <span class="py-1.5 text-rose-700">22</span><span class="py-1.5 text-rose-700">23</span><span class="py-1.5 text-rose-700">24</span><span class="py-1.5 text-rose-700">25</span><span class="py-1.5 text-rose-700">26</span>
-                        <span class="py-1.5 text-pink-500 font-bold bg-pink-100 rounded-lg relative">27 <span class="absolute -bottom-1 right-0.5 text-[8px]">❤️</span></span>
-                        <span class="py-1.5 text-rose-700">28</span>
-                        <span class="py-1.5 text-rose-700">29</span><span class="py-1.5 text-rose-700">30</span>
+                        <div class="bg-white/90 py-2.5 rounded-xl border border-pink-200"><span id="counter-days" class="text-xl font-bold text-pink-500">112</span><p class="text-[10px] text-rose-500">ngày</p></div>
+                        <div class="bg-white/90 py-2.5 rounded-xl border border-pink-200"><span id="counter-hours" class="text-xl font-bold text-pink-500">13</span><p class="text-[10px] text-rose-500">giờ</p></div>
+                        <div class="bg-white/90 py-2.5 rounded-xl border border-pink-200"><span id="counter-mins" class="text-xl font-bold text-pink-500">9</span><p class="text-[10px] text-rose-500">phút</p></div>
+                        <div class="bg-white/90 py-2.5 rounded-xl border border-pink-200"><span id="counter-secs" class="text-xl font-bold text-pink-500">21</span><p class="text-[10px] text-rose-500">giây</p></div>
                     </div>
                 </div>
 
                 <button onclick="downloadActiveImage()" class="w-full bg-pink-500 hover:bg-pink-400 text-white font-medium py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-pink-500/30 transition-all">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                     Tải xuống bức ảnh này
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- AUDIO BACKINGS -->
     <audio id="bg-audio" preload="auto" loop>
         <source src="/__l5e/assets-v1/5131eed8-e26b-4e64-9e3a-bce01ac2a166/hon_ca_yeu.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // =========================================================================
-        // PHẦN BỔ SUNG: KẾT NỐI ĐỒNG BỘ GOOGLE DRIVE RIÊNG BIỆT (KHÔNG ẢNH HƯỞNG GIAO DIỆN)
-        // =========================================================================
-        const DRIVE_API_URL = "https://script.google.com/macros/s/AKfycbxSsf_gdsqOf14MTEthPxIr4HGgJU9-7V0pwsj0-IBF2IKtB9l9LpSDtoDxAwTE1CMwVw/exec";
+        // --- CẤU HÌNH SUPABASE ĐÃ ĐƯỢC ĐIỀN SẴN ---
+        const SUPABASE_URL = "https://lkuhhlofdlaezwjvyppk.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_3V73L7GazqAZgc7Cb-1eOA_0s59xrWM";
+        
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const BUCKET_NAME = 'memories';
 
         let photos = [];
         let currentLayout = 'film';
@@ -310,11 +228,9 @@
             audio.play().then(() => {
                 isAudioPlaying = true;
                 updateAudioButton();
-            }).catch(err => {
-                console.log("Autoplay blocked by browser policy, waiting for user interaction:", err);
-            });
+            }).catch(err => console.log("Autoplay blocked:", err));
 
-            fetchPhotosFromDrive();
+            fetchPhotosFromSupabase();
             startCountdown();
         }
 
@@ -323,43 +239,27 @@
             audio.pause();
             isAudioPlaying = false;
             updateAudioButton();
-
             closeDetailModal();
-
             document.getElementById('main-app').classList.add('hidden');
-            const loginScreen = document.getElementById('login-screen');
-            loginScreen.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'hidden');
-            
+            document.getElementById('login-screen').classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'hidden');
             passwordInput.value = '';
             successContainer.classList.add('hidden');
         }
 
         function toggleAudio() {
             const audio = document.getElementById('bg-audio');
-            if (isAudioPlaying) {
-                audio.pause();
-                isAudioPlaying = false;
-            } else {
-                audio.volume = 0.35;
-                audio.play();
-                isAudioPlaying = true;
-            }
+            if (isAudioPlaying) { audio.pause(); isAudioPlaying = false; }
+            else { audio.volume = 0.35; audio.play(); isAudioPlaying = true; }
             updateAudioButton();
         }
 
         function updateAudioButton() {
-            const btnText = document.getElementById('sound-text');
-            if (isAudioPlaying) {
-                btnText.innerText = "Tắt nhạc";
-            } else {
-                btnText.innerText = "Bật nhạc";
-            }
+            document.getElementById('sound-text').innerText = isAudioPlaying ? "Tắt nhạc" : "Bật nhạc";
         }
 
         function toggleVideoPlayback() {
             const video = document.getElementById('memory-video');
             const playBtn = document.getElementById('video-play-btn');
-
             if (video.paused) {
                 video.play();
                 playBtn.classList.add('opacity-0', 'pointer-events-none');
@@ -370,95 +270,64 @@
             }
         }
 
-        (function setupVideoLoop() {
-            const video = document.getElementById('memory-video');
-            if(video) {
-                video.muted = true;
-                video.loop = true;
-                video.addEventListener('pause', () => {
-                    const btn = document.getElementById('video-play-btn');
-                    if(btn) btn.classList.remove('opacity-0', 'pointer-events-none');
+        function syncCloud() {
+            fetchPhotosFromSupabase();
+            alert("Đã đồng bộ hóa thành công với Supabase Cloud!");
+        }
+
+        async function fetchPhotosFromSupabase() {
+            try {
+                const { data, error } = await supabaseClient.storage.from(BUCKET_NAME).list('', {
+                    sortBy: { column: 'created_at', order: 'desc' }
                 });
-            }
-        })();
 
-        // --- HÀM XỬ LÝ GOOGLE DRIVE ĐÃ ĐƯỢC KHẮC PHỤC CÚ PHÁP ---
-        function syncDrive() {
-            fetchPhotosFromDrive();
-            alert("Đã đồng bộ hóa thành công với Google Drive!");
+                if (error) {
+                    console.error("Lỗi lấy danh sách ảnh:", error.message);
+                    return;
+                }
+
+                photos = data.filter(file => file.name !== '.emptyFolderPlaceholder').map(file => {
+                    const { data: publicUrlData } = supabaseClient.storage.from(BUCKET_NAME).getPublicUrl(file.name);
+                    return {
+                        id: file.id || file.name,
+                        name: file.name,
+                        date: file.created_at ? new Date(file.created_at).toLocaleDateString('vi-VN') : "Hôm nay",
+                        size: file.metadata?.size ? (file.metadata.size / 1024).toFixed(0) + " KB" : "Ảnh kỷ niệm",
+                        url: publicUrlData.publicUrl
+                    };
+                });
+                renderAlbum();
+            } catch (err) {
+                console.error("Lỗi kết nối Supabase:", err);
+            }
         }
 
-        function fetchPhotosFromDrive() {
-            if (!DRIVE_API_URL || DRIVE_API_URL.includes("ĐIỀN_URL")) {
-                console.log("Chưa cấu hình Google Drive URL, chạy chế độ bộ nhớ tạm.");
-                return;
-            }
-            
-            fetch(DRIVE_API_URL)
-                .then(res => res.json())
-                .then(data => {
-                    if(Array.isArray(data)) {
-                        photos = data;
-                        renderAlbum();
-                    }
-                })
-                .catch(err => console.error("Lỗi kết nối Google Drive:", err));
+        function triggerUpload() {
+            document.getElementById('upload-input').click();
         }
 
-        function handleImageUpload(event) {
+        document.getElementById('upload-input').addEventListener('change', async function(event) {
             const files = event.target.files;
             if (!files.length) return;
 
-            if (!DRIVE_API_URL || DRIVE_API_URL.includes("ĐIỀN_URL")) {
-                for (let file of files) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        photos.unshift({
-                            id: Date.now() + Math.random(),
-                            name: file.name,
-                            date: new Date().toLocaleDateString('vi-VN'),
-                            size: (file.size / 1024).toFixed(0) + " KB",
-                            url: e.target.result
-                        });
-                        renderAlbum();
-                    }
-                    reader.readAsDataURL(file);
-                }
-                return;
-            }
-
-            alert("Đang tải ảnh lên Google Drive vĩnh viễn, vui lòng đợi một chút...");
+            alert("Đang tải ảnh lên Supabase Cloud vĩnh viễn...");
 
             for (let file of files) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const base64Data = e.target.result.split(',')[1];
-                    
-                    fetch(DRIVE_API_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            fileName: file.name,
-                            mimeType: file.type,
-                            base64Data: base64Data
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if(data.status === "success") {
-                            fetchPhotosFromDrive();
-                            alert(`Đã lưu vĩnh viễn ảnh "${file.name}" lên Google Drive!`);
-                        } else {
-                            alert("Lỗi khi lưu ảnh lên Drive: " + data.message);
-                        }
-                    })
-                    .catch(err => {
-                        console.error("Lỗi upload Drive:", err);
-                        alert("Không thể kết nối tới Google Drive!");
-                    });
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+
+                const { data, error } = await supabaseClient.storage.from(BUCKET_NAME).upload(fileName, file);
+
+                if (error) {
+                    alert("Lỗi tải ảnh lên: " + error.message);
+                } else {
+                    alert(`Đã lưu vĩnh viễn ảnh "${file.name}" lên mây!`);
                 }
-                reader.readAsDataURL(file);
             }
-        }
+
+            fetchPhotosFromSupabase();
+            this.value = '';
+        });
 
         function switchLayout(layout) {
             currentLayout = layout;
@@ -474,20 +343,12 @@
             document.getElementById('total-album-count').innerText = `${photos.length} ảnh`;
 
             if (photos.length === 0) {
-                container.innerHTML = `<div class="text-center py-16 text-rose-500 text-sm">Không có ảnh sẵn. Bấm vào nút "Tải ảnh lên" phía trên để thêm những bức ảnh kỷ niệm đầu tiên ♡</div>`;
+                container.innerHTML = `<div class="text-center py-16 text-rose-500 text-sm">Chưa có ảnh trên Supabase. Bấm vào nút "Tải ảnh lên" phía trên để thêm những bức ảnh kỷ niệm đầu tiên ♡</div>`;
                 return;
             }
 
             if (currentLayout === 'film') {
-                let html = `
-                    <div class="flex items-center gap-4 min-w-max px-2 relative">
-                        <div class="absolute -top-3 left-0 right-0 h-4 bg-white border-y border-pink-200 flex justify-between px-2 items-center overflow-hidden pointer-events-none">
-                            ${'<div class="w-2 h-2 bg-pink-100 border border-pink-200 mx-1 inline-block"></div>'.repeat(40)}
-                        </div>
-                        <div class="absolute -bottom-3 left-0 right-0 h-4 bg-white border-y border-pink-200 flex justify-between px-2 items-center overflow-hidden pointer-events-none">
-                            ${'<div class="w-2 h-2 bg-pink-100 border border-pink-200 mx-1 inline-block"></div>'.repeat(40)}
-                        </div>
-                `;
+                let html = `<div class="flex items-center gap-4 min-w-max px-2 relative">`;
                 photos.forEach((photo, index) => {
                     html += `
                         <div onclick="openDetailModal(${index})" class="w-56 bg-white/90 border border-pink-200 rounded-xl p-2.5 cursor-pointer transform hover:scale-105 transition-all shadow-xl group">
@@ -507,7 +368,7 @@
                 let html = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[60vh] overflow-y-auto p-2">`;
                 photos.forEach((photo, index) => {
                     html += `
-                        <div onclick="openDetailModal(${index})" class="bg-white/80 border border-pink-200 rounded-2xl p-3 cursor-pointer hover:border-pink-500/50 transition-all group flex gap-3 items-center">
+                        <div onclick="openDetailModal(${index})" class="w-full bg-white/80 border border-pink-200 rounded-2xl p-3 cursor-pointer hover:border-pink-500/50 transition-all group flex gap-3 items-center">
                             <div class="w-24 h-24 rounded-xl overflow-hidden bg-pink-50 flex-shrink-0">
                                 <img src="${photo.url}" alt="${photo.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                             </div>
@@ -532,15 +393,12 @@
             activeIndex = index;
             updateModalContent();
             document.getElementById('detail-modal').classList.remove('hidden');
-            if (window.restartAutoAdvance) window.restartAutoAdvance();
         }
 
         function closeDetailModal() {
             document.getElementById('detail-modal').classList.add('hidden');
             const video = document.getElementById('memory-video');
             if(video) video.pause();
-            const btn = document.getElementById('video-play-btn');
-            if(btn) btn.classList.remove('opacity-0', 'pointer-events-none');
         }
 
         function updateModalContent() {
@@ -561,15 +419,17 @@
             updateModalContent();
         }
 
-        function deleteActivePhoto() {
+        async function deleteActivePhoto() {
             if (confirm("Bạn có chắc chắn muốn xóa bức ảnh này không?")) {
-                photos.splice(activeIndex, 1);
-                if (photos.length === 0) {
-                    closeDetailModal();
-                } else {
-                    activeIndex = activeIndex % photos.length;
-                    updateModalContent();
+                const photoToDelete = photos[activeIndex];
+                const { error } = await supabaseClient.storage.from(BUCKET_NAME).remove([photoToDelete.name]);
+                if(error) {
+                    alert("Lỗi khi xóa ảnh trên mây: " + error.message);
+                    return;
                 }
+                photos.splice(activeIndex, 1);
+                if (photos.length === 0) closeDetailModal();
+                else { activeIndex = activeIndex % photos.length; updateModalContent(); }
                 renderAlbum();
             }
         }
@@ -591,37 +451,14 @@
                 const now = new Date();
                 const diff = now - startDate;
                 if (diff > 0) {
-                    const daysEl = document.getElementById('counter-days');
-                    const hoursEl = document.getElementById('counter-hours');
-                    const minsEl = document.getElementById('counter-mins');
-                    const secsEl = document.getElementById('counter-secs');
-                    if(daysEl) daysEl.innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
-                    if(hoursEl) hoursEl.innerText = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                    if(minsEl) minsEl.innerText = Math.floor((diff / 1000 / 60) % 60);
-                    if(secsEl) secsEl.innerText = Math.floor((diff / 1000) % 60);
+                    document.getElementById('counter-days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    document.getElementById('counter-hours').innerText = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                    document.getElementById('counter-mins').innerText = Math.floor((diff / 1000 / 60) % 60);
+                    document.getElementById('counter-secs').innerText = Math.floor((diff / 1000) % 60);
                 }
             }, 1000);
         }
-    
-        // Trình xem ảnh: tự chuyển sang ảnh tiếp theo sau 3 giây không có tương tác.
-        (function setupAutoAdvance() {
-            const modal = document.getElementById('detail-modal');
-            if(!modal) return;
-            let timer = null;
-            const isOpen = () => !modal.classList.contains('hidden');
-            const restart = () => {
-                clearTimeout(timer);
-                if (!isOpen() || photos.length < 2) return;
-                timer = setTimeout(() => { if (isOpen()) { nextDetailImage(); restart(); } }, 3000);
-            };
-            ['click', 'keydown', 'touchstart'].forEach(ev =>
-                modal.addEventListener(ev, restart, { passive: true }));
-            document.addEventListener('keydown', restart);
-            window.restartAutoAdvance = restart;
-            new MutationObserver(restart).observe(modal, { attributes: true, attributeFilter: ['class'] });
-        })();
-    
-        // Hiệu ứng trang trí: tim & cánh hoa bay lên, sao lấp lánh, tim bung ra khi chạm.
+
         (function setupFloatingDecor() {
             const layer = document.getElementById('floating-decor');
             if (!layer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
