@@ -88,7 +88,7 @@
                 </button>
             </div>
 
-            <p class="text-[11px] text-rose-400 text-center mt-2">Gợi ý: mật khẩu là ngày tháng năm quan trọng nhất của chúng ta, chỉ gồm nguyên số thôi</p>
+            <p class="text-[11px] text-rose-400 text-center mt-2">Gợi ý: mật khẩu là ngày tháng năm quan trọng nhất của chúng mình, chỉ có nguyên số thôi</p>
         </div>
     </div>
 
@@ -203,8 +203,8 @@
                     </div>
 
                     <div class="text-center">
-                        <p class="text-pink-500 text-xs font-semibold">🌷 Khoảnh khắc ngọt ngào bên nhau</p>
-                        <p class="text-rose-500 text-[11px] mt-0.5">♫ Lofi hoa hồng mơ màng · bấm ▶ để phát</p>
+                        <p class="text-pink-500 text-xs font-semibold">🌷 Khoảnh khắc đáng nhớ nhất đối với anh 🌷</p>
+                        <p class="text-rose-500 text-[11px] mt-0.5">♫ Ngày em đồng ý quen anh ♫  </p>
                     </div>
                 </div>
 
@@ -279,7 +279,7 @@
         // =========================================================================
         // PHẦN BỔ SUNG: KẾT NỐI ĐỒNG BỘ GOOGLE DRIVE RIÊNG BIỆT (KHÔNG ẢNH HƯỞNG GIAO DIỆN)
         // =========================================================================
-        const DRIVE_API_URL = "https://script.google.com/macros/s/AKfycbxSsf_gdsqOf14MTEthPxIr4HGgJU9-7V0pwsj0-IBF2IKtB9l9LpSDtoDxAwTE1CMwVw/exec"; // Dán URL Google Apps Script vào đây
+        const DRIVE_API_URL = "https://script.google.com/macros/s/AKfycbxSsf_gdsqOf14MTEthPxIr4HGgJU9-7V0pwsj0-IBF2IKtB9l9LpSDtoDxAwTE1CMwVw/exec";
 
         let photos = [];
         let currentLayout = 'film';
@@ -314,7 +314,6 @@
                 console.log("Autoplay blocked by browser policy, waiting for user interaction:", err);
             });
 
-            // Gọi đồng bộ ảnh từ Google Drive ngay khi vào ứng dụng
             fetchPhotosFromDrive();
             startCountdown();
         }
@@ -383,88 +382,83 @@
             }
         })();
 
-        // --- CÁC HÀM XỬ LÝ GOOGLE DRIVE ĐỘC LẬP ---
+        // --- HÀM XỬ LÝ GOOGLE DRIVE ĐÃ ĐƯỢC KHẮC PHỤC CÚ PHÁP ---
         function syncDrive() {
             fetchPhotosFromDrive();
             alert("Đã đồng bộ hóa thành công với Google Drive!");
         }
 
-     function fetchPhotosFromDrive() {
-    // Chỉ return nếu bạn chưa điền URL hoặc để chuỗi trống/chứa chữ ĐIỀN_URL
-    if (!DRIVE_API_URL || DRIVE_API_URL.includes("ĐIỀN_URL")) {
-        console.log("Chưa cấu hình Google Drive URL, chạy chế độ bộ nhớ tạm.");
-        return;
-    }
-    
-    // Đoạn code gọi API lấy ảnh chạy ở đây
-    fetch(DRIVE_API_URL)
-        .then(res => res.json())
-        .then(data => {
-            if(Array.isArray(data)) {
-                photos = data;
-                renderAlbum();
+        function fetchPhotosFromDrive() {
+            if (!DRIVE_API_URL || DRIVE_API_URL.includes("ĐIỀN_URL")) {
+                console.log("Chưa cấu hình Google Drive URL, chạy chế độ bộ nhớ tạm.");
+                return;
             }
-        })
-        .catch(err => console.error("Lỗi kết nối Google Drive:", err));
-}
-        }
-
-      function handleImageUpload(event) {
-    const files = event.target.files;
-    if (!files.length) return;
-
-    // Nếu chưa cấu hình URL Google Drive, lưu tạm trên trình duyệt
-    if (!DRIVE_API_URL || DRIVE_API_URL.includes("ĐIỀN_URL")) {
-        for (let file of files) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                photos.unshift({
-                    id: Date.now() + Math.random(),
-                    name: file.name,
-                    date: new Date().toLocaleDateString('vi-VN'),
-                    size: (file.size / 1024).toFixed(0) + " KB",
-                    url: e.target.result
-                });
-                renderAlbum();
-            }
-            reader.readAsDataURL(file);
-        }
-        return;
-    }
-
-    alert("Đang tải ảnh lên Google Drive vĩnh viễn, vui lòng đợi một chút...");
-
-    // Nếu đã cấu hình URL Google Drive, gửi ảnh thẳng lên mây
-    for (let file of files) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const base64Data = e.target.result.split(',')[1];
             
-            fetch(DRIVE_API_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    fileName: file.name,
-                    mimeType: file.type,
-                    base64Data: base64Data
+            fetch(DRIVE_API_URL)
+                .then(res => res.json())
+                .then(data => {
+                    if(Array.isArray(data)) {
+                        photos = data;
+                        renderAlbum();
+                    }
                 })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === "success") {
-                    fetchPhotosFromDrive(); // Cập nhật lại danh sách ảnh từ Drive
-                    alert(`Đã lưu vĩnh viễn ảnh "${file.name}" lên Google Drive!`);
-                } else {
-                    alert("Lỗi khi lưu ảnh lên Drive: " + data.message);
-                }
-            })
-            .catch(err => {
-                console.error("Lỗi upload Drive:", err);
-                alert("Không thể kết nối tới Google Drive!");
-            });
+                .catch(err => console.error("Lỗi kết nối Google Drive:", err));
         }
-        reader.readAsDataURL(file);
-    }
-}
+
+        function handleImageUpload(event) {
+            const files = event.target.files;
+            if (!files.length) return;
+
+            if (!DRIVE_API_URL || DRIVE_API_URL.includes("ĐIỀN_URL")) {
+                for (let file of files) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        photos.unshift({
+                            id: Date.now() + Math.random(),
+                            name: file.name,
+                            date: new Date().toLocaleDateString('vi-VN'),
+                            size: (file.size / 1024).toFixed(0) + " KB",
+                            url: e.target.result
+                        });
+                        renderAlbum();
+                    }
+                    reader.readAsDataURL(file);
+                }
+                return;
+            }
+
+            alert("Đang tải ảnh lên Google Drive vĩnh viễn, vui lòng đợi một chút...");
+
+            for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Data = e.target.result.split(',')[1];
+                    
+                    fetch(DRIVE_API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            fileName: file.name,
+                            mimeType: file.type,
+                            base64Data: base64Data
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.status === "success") {
+                            fetchPhotosFromDrive();
+                            alert(`Đã lưu vĩnh viễn ảnh "${file.name}" lên Google Drive!`);
+                        } else {
+                            alert("Lỗi khi lưu ảnh lên Drive: " + data.message);
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Lỗi upload Drive:", err);
+                        alert("Không thể kết nối tới Google Drive!");
+                    });
+                }
+                reader.readAsDataURL(file);
+            }
+        }
 
         function switchLayout(layout) {
             currentLayout = layout;
@@ -565,6 +559,19 @@
         function nextDetailImage() {
             activeIndex = (activeIndex + 1) % photos.length;
             updateModalContent();
+        }
+
+        function deleteActivePhoto() {
+            if (confirm("Bạn có chắc chắn muốn xóa bức ảnh này không?")) {
+                photos.splice(activeIndex, 1);
+                if (photos.length === 0) {
+                    closeDetailModal();
+                } else {
+                    activeIndex = activeIndex % photos.length;
+                    updateModalContent();
+                }
+                renderAlbum();
+            }
         }
 
         function downloadActiveImage() {
