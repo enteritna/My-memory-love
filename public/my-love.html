@@ -515,6 +515,22 @@
                 }
             }, 1000);
         }
+    
+        // Trình xem ảnh: tự chuyển sang ảnh tiếp theo sau 3 giây không có tương tác.
+        (function setupAutoAdvance() {
+            const modal = document.getElementById('detail-modal');
+            let timer = null;
+            const isOpen = () => !modal.classList.contains('hidden');
+            const restart = () => {
+                clearTimeout(timer);
+                if (!isOpen() || photos.length < 2) return;
+                timer = setTimeout(() => { if (isOpen()) { nextDetailImage(); restart(); } }, 3000);
+            };
+            ['click', 'mousemove', 'keydown', 'touchstart', 'wheel'].forEach(ev =>
+                modal.addEventListener(ev, restart, { passive: true }));
+            document.addEventListener('keydown', restart);
+            new MutationObserver(restart).observe(modal, { attributes: true, attributeFilter: ['class'] });
+        })();
     </script>
 </body>
 </html>
