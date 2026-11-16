@@ -27,6 +27,25 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(236, 72, 153, 0.8);
         }
+
+        /* Hiệu ứng trang trí bay nổi: tim, cánh hoa, lấp lánh */
+        #floating-decor { position: fixed; inset: 0; pointer-events: none; z-index: 5; overflow: hidden; }
+        .float-item { position: absolute; bottom: -40px; opacity: 0; will-change: transform, opacity;
+            animation: floatUp linear forwards; filter: drop-shadow(0 0 6px rgba(244,114,182,0.55)); user-select: none; }
+        @keyframes floatUp {
+            0%   { transform: translate(0, 0) rotate(0deg) scale(var(--s)); opacity: 0; }
+            10%  { opacity: var(--o); }
+            50%  { transform: translate(var(--dx), -55vh) rotate(calc(var(--r) / 2)) scale(var(--s)); }
+            90%  { opacity: var(--o); }
+            100% { transform: translate(calc(var(--dx) * -0.6), -110vh) rotate(var(--r)) scale(var(--s)); opacity: 0; }
+        }
+        .twinkle { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #fbcfe8;
+            box-shadow: 0 0 8px 2px rgba(251,207,232,0.7); animation: twinkle ease-in-out infinite; }
+        @keyframes twinkle { 0%,100% { opacity: 0.1; transform: scale(0.6); } 50% { opacity: 0.9; transform: scale(1.2); } }
+        .click-heart { position: fixed; pointer-events: none; z-index: 60; font-size: 18px; animation: burst 900ms ease-out forwards; }
+        @keyframes burst { 0% { transform: translate(-50%,-50%) scale(0.4); opacity: 1; }
+            100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.1); opacity: 0; } }
+        @media (prefers-reduced-motion: reduce) { #floating-decor, .click-heart { display: none; } }
     </style>
 </head>
 <body class="bg-[#0b0f19] text-white min-h-screen overflow-x-hidden relative">
@@ -38,6 +57,8 @@
         <div class="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-purple-600/10 blur-[150px] animate-pulse" style="animation-duration: 6s;"></div>
         <div class="absolute bottom-0 left-0 right-0 h-32 bg-[url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=2000&q=80')] bg-cover bg-bottom opacity-15 mix-blend-overlay"></div>
     </div>
+
+    <div id="floating-decor" aria-hidden="true"></div>
 
     <!-- ================= GIAO DIỆN 1 & 2: TRANG CHỦ & ĐĂNG NHẬP ================= -->
     <div id="login-screen" class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 transition-all duration-700">
@@ -532,6 +553,56 @@
             document.addEventListener('keydown', restart);
             window.restartAutoAdvance = restart;
             new MutationObserver(restart).observe(modal, { attributes: true, attributeFilter: ['class'] });
+        })();
+    
+        // Hiệu ứng trang trí: tim & cánh hoa bay lên, sao lấp lánh, tim bung ra khi chạm.
+        (function setupFloatingDecor() {
+            const layer = document.getElementById('floating-decor');
+            if (!layer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const symbols = ['❤', '💕', '🌸', '✿', '💗', '🌷', '✨', '♡'];
+            const colors = ['#f9a8d4', '#f472b6', '#fda4af', '#fbcfe8', '#e879f9'];
+            for (let i = 0; i < 40; i++) {
+                const t = document.createElement('span');
+                t.className = 'twinkle';
+                t.style.left = Math.random() * 100 + '%';
+                t.style.top = Math.random() * 100 + '%';
+                t.style.animationDuration = (2 + Math.random() * 4) + 's';
+                t.style.animationDelay = (Math.random() * 4) + 's';
+                layer.appendChild(t);
+            }
+            function spawn() {
+                if (document.hidden) return;
+                const el = document.createElement('span');
+                el.className = 'float-item';
+                el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.fontSize = (12 + Math.random() * 22) + 'px';
+                el.style.color = colors[Math.floor(Math.random() * colors.length)];
+                el.style.setProperty('--dx', (Math.random() * 120 - 60) + 'px');
+                el.style.setProperty('--r', (Math.random() * 360 - 180) + 'deg');
+                el.style.setProperty('--s', (0.7 + Math.random() * 0.6).toFixed(2));
+                el.style.setProperty('--o', (0.35 + Math.random() * 0.45).toFixed(2));
+                const dur = 9 + Math.random() * 8;
+                el.style.animationDuration = dur + 's';
+                layer.appendChild(el);
+                setTimeout(() => el.remove(), dur * 1000 + 200);
+            }
+            for (let i = 0; i < 8; i++) setTimeout(spawn, i * 400);
+            setInterval(spawn, 900);
+            document.addEventListener('pointerdown', (e) => {
+                for (let i = 0; i < 6; i++) {
+                    const h = document.createElement('span');
+                    h.className = 'click-heart';
+                    h.textContent = ['❤', '💕', '💗'][i % 3];
+                    h.style.left = e.clientX + 'px';
+                    h.style.top = e.clientY + 'px';
+                    const a = (Math.PI * 2 * i) / 6;
+                    h.style.setProperty('--dx', Math.cos(a) * 45 + 'px');
+                    h.style.setProperty('--dy', Math.sin(a) * 45 - 20 + 'px');
+                    document.body.appendChild(h);
+                    setTimeout(() => h.remove(), 950);
+                }
+            });
         })();
     </script>
 </body>
