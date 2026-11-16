@@ -464,6 +464,7 @@
             activeIndex = index;
             updateModalContent();
             document.getElementById('detail-modal').classList.remove('hidden');
+            if (window.restartAutoAdvance) window.restartAutoAdvance();
         }
 
         function closeDetailModal() {
@@ -526,9 +527,10 @@
                 if (!isOpen() || photos.length < 2) return;
                 timer = setTimeout(() => { if (isOpen()) { nextDetailImage(); restart(); } }, 3000);
             };
-            ['click', 'mousemove', 'keydown', 'touchstart', 'wheel'].forEach(ev =>
+            ['click', 'keydown', 'touchstart'].forEach(ev =>
                 modal.addEventListener(ev, restart, { passive: true }));
             document.addEventListener('keydown', restart);
+            window.restartAutoAdvance = restart;
             new MutationObserver(restart).observe(modal, { attributes: true, attributeFilter: ['class'] });
         })();
     </script>
