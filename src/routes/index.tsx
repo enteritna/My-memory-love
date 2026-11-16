@@ -1,23 +1,27 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-// The home route ships no og:image, so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "My Love - Kho ảnh kỷ niệm" },
+      { name: "description", content: "Kho ảnh kỷ niệm của hai đứa mình. Nhập mật khẩu để mở nhé ♡" },
+      { property: "og:title", content: "My Love - Kho ảnh kỷ niệm" },
+      { property: "og:description", content: "Kho ảnh kỷ niệm của hai đứa mình. Nhập mật khẩu để mở nhé ♡" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
+// The page itself is the user's standalone HTML file served from /public.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <iframe
+      src="/my-love.html"
+      title="My Love - Kho ảnh kỷ niệm"
+      className="fixed inset-0 h-full w-full border-0"
+      allow="autoplay; fullscreen"
+    />
   );
 }
