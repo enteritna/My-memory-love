@@ -176,7 +176,7 @@
                 <!-- 1. Trình phát video kỷ niệm & nhạc lofi phụ -->
                 <div class="bg-slate-950/80 border border-white/10 rounded-2xl p-3 flex flex-col gap-3">
                     <div class="relative rounded-xl overflow-hidden aspect-video bg-slate-900 flex items-center justify-center group">
-                        <video id="memory-video" src="video_1.mp4" class="w-full h-full object-cover" playsinline></video>
+                        <video id="memory-video" src="/__l5e/assets-v1/ddbdeca1-7af0-4fcc-819e-5cfdaff8eb74/memory_video.mp4" preload="metadata" class="w-full h-full object-cover" playsinline></video>
                         
                         <button id="video-play-btn" onclick="toggleVideoPlayback()" class="absolute inset-0 m-auto w-12 h-12 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white flex items-center justify-center shadow-lg shadow-emerald-500/50 transform hover:scale-110 transition-all z-10">
                             <svg id="play-btn-icon" class="w-6 h-6 ml-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
@@ -253,11 +253,7 @@
 
     <!-- AUDIO BACKINGS -->
     <audio id="bg-audio" preload="auto" loop>
-        <source src="https://docs.google.com/uc?export=download&id=1xRBItIO94LoVqVr-zhoyLTrBYHTub6EK" type="audio/mpeg">
-    </audio>
-
-    <audio id="modal-audio" preload="auto" loop>
-        <source src="https://docs.google.com/uc?export=download&id=1xRBItIO94LoVqVr-zhoyLTrBYHTub6EK" type="audio/mpeg">
+        <source src="/__l5e/assets-v1/5131eed8-e26b-4e64-9e3a-bce01ac2a166/hon_ca_yeu.mp3" type="audio/mpeg">
     </audio>
 
     <script>
@@ -339,20 +335,38 @@
         function toggleVideoPlayback() {
             const video = document.getElementById('memory-video');
             const playBtn = document.getElementById('video-play-btn');
-            const modalAudio = document.getElementById('modal-audio');
 
             if (video.paused) {
                 video.play();
-                modalAudio.volume = 0.4;
-                modalAudio.play();
                 playBtn.classList.add('opacity-0', 'pointer-events-none');
                 video.controls = true;
             } else {
                 video.pause();
-                modalAudio.pause();
                 playBtn.classList.remove('opacity-0', 'pointer-events-none');
             }
         }
+
+        // Nhạc nền tạm dừng khi video kỷ niệm phát tiếng, rồi tự phát lại khi video dừng.
+        let musicPausedForVideo = false;
+        (function setupVideoMusicHandoff() {
+            const video = document.getElementById('memory-video');
+            const bg = document.getElementById('bg-audio');
+            video.addEventListener('play', () => {
+                if (isAudioPlaying) {
+                    bg.pause();
+                    musicPausedForVideo = true;
+                }
+            });
+            const resume = () => {
+                if (musicPausedForVideo && isAudioPlaying) {
+                    bg.play().catch(() => {});
+                }
+                musicPausedForVideo = false;
+                document.getElementById('video-play-btn').classList.remove('opacity-0', 'pointer-events-none');
+            };
+            video.addEventListener('pause', resume);
+            video.addEventListener('ended', resume);
+        })();
 
         function syncDrive() {
             alert("Đã đồng bộ hóa thành công với Google Drive!");
@@ -467,9 +481,7 @@
         function closeDetailModal() {
             document.getElementById('detail-modal').classList.add('hidden');
             const video = document.getElementById('memory-video');
-            const modalAudio = document.getElementById('modal-audio');
             video.pause();
-            modalAudio.pause();
             document.getElementById('video-play-btn').classList.remove('opacity-0', 'pointer-events-none');
         }
 
