@@ -37,32 +37,31 @@
 </head>
 <body class="bg-slate-950 text-rose-100 min-h-screen overflow-x-hidden relative">
 
-    <!-- NỀN ĐỒ HỌA BOKEH TỐI LÃNG MẠN (Giống mẫu ảnh) -->
+    <!-- NỀN ẢNH BOKEH THỰC TẾ (Đúng mẫu ảnh bạn gửi) -->
     <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-purple-950/60 to-slate-950"></div>
-        <div class="absolute top-[-10%] right-[10%] w-[50vw] h-[50vw] rounded-full bg-pink-500/15 blur-[140px] animate-pulse"></div>
-        <div class="absolute bottom-[-10%] left-[10%] w-[60vw] h-[60vw] rounded-full bg-purple-600/15 blur-[160px] animate-pulse" style="animation-duration: 6s;"></div>
+        <div class="absolute inset-0 bg-cover bg-center filter brightness-75 scale-105" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=2000&auto=format&fit=crop');"></div>
+        <div class="absolute inset-0 bg-slate-950/50 backdrop-blur-[2px]"></div>
     </div>
 
     <div id="floating-decor" aria-hidden="true"></div>
 
-    <!-- MÀN HÌNH ĐĂNG NHẬP (Thiết kế mới giống hệt ảnh mẫu) -->
+    <!-- MÀN HÌNH ĐĂNG NHẬP -->
     <div id="login-screen" class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 transition-all duration-700">
         <div class="text-center mb-6">
-            <p class="text-xs tracking-[0.3em] text-pink-400 font-medium mb-2">27 · 07 · 2026</p>
-            <h1 class="romantic-font text-6xl md:text-7xl text-pink-400 drop-shadow-[0_0_30px_rgba(244,114,182,0.5)]">My Love</h1>
-            <p class="text-rose-200/80 text-xs md:text-sm mt-3">Kho ảnh kỷ niệm của hai đứa mình. Nhập mật khẩu để mở nhé ♡</p>
+            <p class="text-xs tracking-[0.3em] text-pink-300 font-medium mb-2 drop-shadow">27 · 07 </p>
+            <h1 class="romantic-font text-6xl md:text-7xl text-pink-400 drop-shadow-[0_0_25px_rgba(244,114,182,0.7)]">My Love</h1>
+            <p class="text-rose-100/90 text-xs md:text-sm mt-3 drop-shadow">Kho ảnh kỷ niệm của hai đứa mình. Nhập mật khẩu để mở nhé ♡</p>
         </div>
 
-        <div class="w-full max-w-md bg-slate-900/40 backdrop-blur-2xl border border-white/10 p-7 rounded-3xl shadow-2xl flex flex-col items-center gap-4">
-            <div class="flex items-center gap-2 text-xs text-pink-400/90 font-medium">
+        <div class="w-full max-w-md bg-slate-900/60 backdrop-blur-xl border border-white/15 p-7 rounded-3xl shadow-2xl flex flex-col items-center gap-4">
+            <div class="flex items-center gap-2 text-xs text-pink-300 font-medium">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                 Mật khẩu
             </div>
             
             <div class="relative w-full">
                 <input type="password" id="password-input" placeholder="••••••••" maxlength="8"
-                    class="w-full bg-slate-950/70 border border-white/15 rounded-full py-3.5 px-6 text-center tracking-widest text-lg text-rose-100 placeholder-rose-300/30 focus:outline-none focus:border-pink-500 transition-all shadow-inner">
+                    class="w-full bg-slate-950/70 border border-white/20 rounded-full py-3.5 px-6 text-center tracking-widest text-lg text-rose-100 placeholder-rose-300/30 focus:outline-none focus:border-pink-400 transition-all shadow-inner">
                 <button onclick="togglePassword()" class="absolute right-5 top-1/2 -translate-y-1/2 text-rose-300/60 hover:text-rose-100">
                     <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 </button>
@@ -70,13 +69,13 @@
 
             <div id="success-container" class="w-full flex flex-col items-center gap-3 hidden transition-all duration-500">
                 <p class="text-emerald-400 text-xs font-medium animate-pulse">Đúng rồi! Bấm OPEN để vào ♡</p>
-                <button onclick="enterApp()" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-3.5 px-8 rounded-full shadow-lg shadow-pink-500/30 transition-all transform hover:scale-[1.02] active:scale-[0.98]">
+                <button onclick="enterApp()" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-3.5 px-8 rounded-full shadow-lg shadow-pink-500/40 transition-all transform hover:scale-[1.02] active:scale-[0.98]">
                     OPEN
                 </button>
             </div>
 
-            <p class="text-[11px] text-rose-300/50 text-center mt-2 leading-relaxed">
-                Lớp khóa này chỉ che giao diện trên trình duyệt. Ảnh lưu trữ đám mây được bảo vệ riêng bằng tài khoản đăng nhập.
+            <p class="text-[11px] text-rose-200/60 text-center mt-2 leading-relaxed">
+               Gợi ý: Mật khẩu là ngày đặc biệt nhất bọn mình, vốn là ngày khác nhưng lý do đặc biệt nên chọn ngày này, mật khẩu chỉ nguyên số thôi
             </p>
         </div>
     </div>
@@ -93,7 +92,7 @@
                 </div>
                 <div class="hidden sm:flex items-center gap-1.5 bg-emerald-50 border border-emerald-500/30 text-emerald-600 text-xs px-3 py-1 rounded-full">
                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-                    Đã kết nối Supabase Cloud
+                    Đã sao lưu
                 </div>
             </div>
 
@@ -180,7 +179,8 @@
                         </button>
                     </div>
                     <div class="text-center">
-                        <p class="text-pink-500 text-xs font-semibold">🌷 Khoảnh khắc ngọt ngào bên nhau</p>
+                        <p class="text-pink-500 text-xs font-semibold">🌷 Ngày em say Yes 🌷</p>
+                         <p class="text-rose-500 text-[11px] mt-0.5">♫ Ngày quan trọng và đáng giá nhất đối với anh ♫ </p>
                     </div>
                 </div>
 
@@ -225,7 +225,7 @@
                 </div>
 
                 <button onclick="downloadActiveImage()" class="w-full bg-pink-500 hover:bg-pink-400 text-white font-medium py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-pink-500/30 transition-all">
-                    Tải xuống bức ảnh này
+                    Lưu bức ảnh này
                 </button>
             </div>
         </div>
