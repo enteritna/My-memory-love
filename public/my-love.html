@@ -107,7 +107,7 @@
                 </div>
                 <div class="hidden sm:flex items-center gap-1.5 bg-emerald-50 border border-emerald-500/30 text-emerald-600 text-xs px-3 py-1 rounded-full">
                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-                    Đã sao lưu đám mây
+                    Đã kết nối Google Drive
                 </div>
             </div>
 
@@ -276,6 +276,11 @@
     </audio>
 
     <script>
+        // =========================================================================
+        // PHẦN BỔ SUNG: KẾT NỐI ĐỒNG BỘ GOOGLE DRIVE RIÊNG BIỆT (KHÔNG ẢNH HƯỞNG GIAO DIỆN)
+        // =========================================================================
+        const DRIVE_API_URL = "https://script.google.com/macros/s/AKfycbxSsf_gdsqOf14MTEthPxIr4HGgJU9-7V0pwsj0-IBF2IKtB9l9LpSDtoDxAwTE1CMwVw/exec"; // Dán URL Google Apps Script vào đây
+
         let photos = [];
         let currentLayout = 'film';
         let activeIndex = 0;
@@ -309,7 +314,8 @@
                 console.log("Autoplay blocked by browser policy, waiting for user interaction:", err);
             });
 
-            renderAlbum();
+            // Gọi đồng bộ ảnh từ Google Drive ngay khi vào ứng dụng
+            fetchPhotosFromDrive();
             startCountdown();
         }
 
@@ -365,35 +371,83 @@
             }
         }
 
-        // Video kỷ niệm không có tiếng và lặp liên tục, nên nhạc nền cứ phát bình thường.
         (function setupVideoLoop() {
             const video = document.getElementById('memory-video');
-            video.muted = true;
-            video.loop = true;
-            video.addEventListener('pause', () => {
-                document.getElementById('video-play-btn').classList.remove('opacity-0', 'pointer-events-none');
-            });
+            if(video) {
+                video.muted = true;
+                video.loop = true;
+                video.addEventListener('pause', () => {
+                    const btn = document.getElementById('video-play-btn');
+                    if(btn) btn.classList.remove('opacity-0', 'pointer-events-none');
+                });
+            }
         })();
 
+        // --- CÁC HÀM XỬ LÝ GOOGLE DRIVE ĐỘC LẬP ---
         function syncDrive() {
+            fetchPhotosFromDrive();
             alert("Đã đồng bộ hóa thành công với Google Drive!");
+        }
+
+        function fetchPhotosFromDrive() {
+            if (DRIVE_API_URL.includes("https://script.google.com/macros/s/AKfycbxSsf_gdsqOf14MTEthPxIr4HGgJU9-7V0pwsj0-IBF2IKtB9l9LpSDtoDxAwTE1CMwVw/exec")) {
+                console.log("Chưa cấu hình Google Drive URL, chạy chế độ bộ nhớ tạm.");
+                return;
+            }
+            fetch(DRIVE_API_URL)
+                .then(res => res.json())
+                .then(data => {
+                    if(Array.isArray(data)) {
+                        photos = data;
+                        renderAlbum();
+                    }
+                })
+                .catch(err => console.error("Lỗi kết nối Google Drive:", err));
         }
 
         function handleImageUpload(event) {
             const files = event.target.files;
             if (!files.length) return;
 
+            // Nếu chưa điền URL Google Drive, lưu tạm trên trình duyệt để không làm lỗi web của bạn
+            if (DRIVE_API_URL.includes("https://script.google.com/macros/s/AKfycbxSsf_gdsqOf14MTEthPxIr4HGgJU9-7V0pwsj0-IBF2IKtB9l9LpSDtoDxAwTE1CMwVw/exec")) {
+                for (let file of files) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        photos.unshift({
+                            id: Date.now() + Math.random(),
+                            name: file.name,
+                            date: new Date().toLocaleDateString('vi-VN'),
+                            size: (file.size / 1024).toFixed(0) + " KB",
+                            url: e.target.result
+                        });
+                        renderAlbum();
+                    }
+                    reader.readAsDataURL(file);
+                }
+                return;
+            }
+
+            alert("Đang tải ảnh lên Google Drive vĩnh viễn...");
             for (let file of files) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    photos.unshift({
-                        id: Date.now() + Math.random(),
-                        name: file.name,
-                        date: new Date().toLocaleDateString('vi-VN'),
-                        size: (file.size / 1024).toFixed(0) + " KB",
-                        url: e.target.result
-                    });
-                    renderAlbum();
+                    const base64Data = e.target.result.split(',')[1];
+                    fetch(DRIVE_API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            fileName: file.name,
+                            mimeType: file.type,
+                            base64Data: base64Data
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.status === "success") {
+                            fetchPhotosFromDrive();
+                        }
+                    })
+                    .catch(err => console.error("Lỗi upload Drive:", err));
                 }
                 reader.readAsDataURL(file);
             }
@@ -421,6 +475,7 @@
 
         function renderAlbum() {
             const container = document.getElementById('album-container');
+            if(!container) return;
             document.getElementById('photo-count').innerText = `${photos.length} ảnh`;
             document.getElementById('total-album-count').innerText = `${photos.length} ảnh`;
 
@@ -489,8 +544,9 @@
         function closeDetailModal() {
             document.getElementById('detail-modal').classList.add('hidden');
             const video = document.getElementById('memory-video');
-            video.pause();
-            document.getElementById('video-play-btn').classList.remove('opacity-0', 'pointer-events-none');
+            if(video) video.pause();
+            const btn = document.getElementById('video-play-btn');
+            if(btn) btn.classList.remove('opacity-0', 'pointer-events-none');
         }
 
         function updateModalContent() {
@@ -528,10 +584,14 @@
                 const now = new Date();
                 const diff = now - startDate;
                 if (diff > 0) {
-                    document.getElementById('counter-days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
-                    document.getElementById('counter-hours').innerText = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                    document.getElementById('counter-mins').innerText = Math.floor((diff / 1000 / 60) % 60);
-                    document.getElementById('counter-secs').innerText = Math.floor((diff / 1000) % 60);
+                    const daysEl = document.getElementById('counter-days');
+                    const hoursEl = document.getElementById('counter-hours');
+                    const minsEl = document.getElementById('counter-mins');
+                    const secsEl = document.getElementById('counter-secs');
+                    if(daysEl) daysEl.innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    if(hoursEl) hoursEl.innerText = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                    if(minsEl) minsEl.innerText = Math.floor((diff / 1000 / 60) % 60);
+                    if(secsEl) secsEl.innerText = Math.floor((diff / 1000) % 60);
                 }
             }, 1000);
         }
@@ -539,6 +599,7 @@
         // Trình xem ảnh: tự chuyển sang ảnh tiếp theo sau 3 giây không có tương tác.
         (function setupAutoAdvance() {
             const modal = document.getElementById('detail-modal');
+            if(!modal) return;
             let timer = null;
             const isOpen = () => !modal.classList.contains('hidden');
             const restart = () => {
